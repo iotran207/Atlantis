@@ -1,0 +1,24 @@
+.main{
+    display: flex;
+    flex-direction: row;
+}
+
+.margin-box{
+    margin-left: 50px;
+    margin-top: 50px;
+    border-width: 0px;
+    border-style: solid;
+    border-color: #000000;
+    padding: 10px;
+    width: 600px;
+}
+
+.video-box{
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+}
+
+.output{
+    
+}
