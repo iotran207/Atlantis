@@ -165,3 +165,9 @@ cython_debug/
 *.mkv
 *.mov
 *.webm
+
+#image
+*.png
+*.jpg
+*.jpeg
+

@@ -17,7 +17,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 OUTPUT = []
 
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
-labels_dict = {0:'hi',1:'toi la',2:'hoang lan'}
+labels_dict = {0:'ok',1:'xin chao',2:'tam biet'}
 CHECK_FRAME = 0
 predicted_character = ''
 
