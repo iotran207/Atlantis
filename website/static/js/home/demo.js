@@ -1,4 +1,4 @@
-let stream;
+    let stream;
     let recorder;
     let videoPreview = document.getElementById('video-preview');
     let startRecordingButton = document.getElementById('start-recording');

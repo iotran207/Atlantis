@@ -6,7 +6,7 @@ from cv2 import VideoCapture, cvtColor, COLOR_BGR2RGB, imencode, CAP_DSHOW
 from pickle import load as pickle_load
 from time import time
 from pydantic import BaseModel
-from sqlite3 import connect as sqlite_connect
+from sqlite3 import co5nnect as sqlite_connect
 from random import SystemRandom
 from string import ascii_uppercase, digits
 from os.path import exists as path_exists
@@ -28,7 +28,7 @@ hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 model_dict = pickle_load(open('model.p', 'rb'))
 model = model_dict['model']
 
-labels_dict = {0:'hi',1:'toi la',2:'hoang lan'} # Update this dict with your own labels
+labels_dict = {0:'hi',1:'toi la',2:'hoang lan'} 
 
 class GetTokenModel(BaseModel):
     username: str
