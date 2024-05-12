@@ -1,19 +1,13 @@
----
-runme:
-  id: 01HXQ4NN4MHTJTRY3Q2ZWHP2A7
-  version: v3
----
-
 # Atlantis engine
 
 ![1715102710368](example/docs/image/Atlantis.png)
 
 ## Thành quả phát triển
 
-* [X]  Thiết kế API
-* [X]  Công khai toàn bộ mã nguồn
-* [X]  Tạo các code mẫu để áp dụng
-* [ ]  đang cập nhật tiếp...
+- [x] Thiết kế API
+- [x] Công khai toàn bộ mã nguồn
+- [x] Tạo các code mẫu để áp dụng
+- [ ] đang cập nhật tiếp...
 
 ## Thử nghiệm
 
@@ -31,15 +25,15 @@ Giao tiếp có vai trò vô cùng quan trọng đối với mỗi chúng ta, n�
 
 ### Công nghệ sử dụng
 
-* **Thị giác máy tính**
+- **Thị giác máy tính**
 
 Thị giác máy tính là gì? Thị giác máy tính là một công nghệ mà máy sử dụng để tự động nhận biết và mô tả hình ảnh một cách chính xác và hiệu quả. Ngày nay, các hệ thống máy tính có quyền truy cập vào khối lượng lớn hình ảnh và dữ liệu video bắt nguồn từ hoặc được tạo bằng điện thoại thông minh, camera giao thông, hệ thống bảo mật và các thiết bị khác. Ứng dụng thị giác máy tính sử dụng trí tuệ nhân tạo và máy học (AI/ML) để xử lý những dữ liệu này một cách chính xác nhằm xác định đối tượng và nhận diện khuôn mặt, cũng như phân loại, đề xuất, giám sát và phát hiện.
 
-* **Máy học**
+- **Máy học**
 
 Máy học (machine learning) là một lĩnh vực của trí tuệ nhân tạo (AI) mà trong đó máy tính được lập trình để tự động học và cải thiện từ dữ liệu mà nó nhận được. Thay vì chỉ dựa trên các quy tắc cụ thể được lập trình trước, máy học cho phép máy tính "học" thông qua việc phân tích dữ liệu và tìm ra các mẫu, xu hướng hoặc quy luật ẩn trong dữ liệu mà không cần được lập trình trực tiếp.
 
-* **Giao diện chương trình ứng dụng**
+- **Giao diện chương trình ứng dụng**
 
 Giao diện chương trình là gì? Giao diện chương trình – Application Programming Interface viết tắt là API là một trung gian phần mềm cho phép hai ứng dụng giao tiếp với nhau, có thể sử dụng cho web-based system, operating system, database system, computer hardware, hoặc software library.
 
@@ -49,7 +43,7 @@ Giao diện chương trình là gì? Giao diện chương trình – Application
 
 #### Dưới đây là hướng dẫn train model cơ bản
 
-```python {"id":"01HXQ4NN4K1WC0X7KXQHW3331T"}
+```python
 # engine/train/collect_imgs.py
 
 import os
@@ -84,7 +78,7 @@ cv2.destroyAllWindows()
 
 ```
 
-```python {"id":"01HXQ4NN4K1WC0X7KXQJAGAZM4"}
+```python
 # engine/train/create_dataset.py
 
 import os
@@ -132,7 +126,7 @@ with open('data.pickle', 'wb') as f:
 
 ```
 
-```python {"id":"01HXQ4NN4K1WC0X7KXQNK2D04E"}
+```python
 # engine/train/train_classifier.py
 
 import pickle
@@ -171,7 +165,7 @@ with open('../model/model.p', 'wb') as f:
 remove('./data.pickle')
 ```
 
-```python {"id":"01HXQ4NN4K1WC0X7KXQP0PVHJE"}
+```python
 # engine/train/inference_classifier.py
 
 import pickle
@@ -264,7 +258,7 @@ cv2.destroyAllWindows()
 
 ## Giấy phép
 
-```md {"id":"01HXQ4NN4MHTJTRY3Q2WSHGVHA"}
+```
 MIT License
 
 Copyright (c) 2024 iotran207
@@ -284,7 +278,7 @@ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION 
+OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
