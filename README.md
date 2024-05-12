@@ -9,6 +9,12 @@
 * [X]  Tạo các code mẫu để áp dụng
 * [ ]  đang cập nhật tiếp...
 
+## Thử nghiệm
+
+Thầy cô có thể truy cập đường link https://pealadau.org/atlantis để dùng thử dự án lần này.
+
+Ngoài ra dự án sẽ sớm công khai link API để áp dụng vào dự án thực tế.
+
 ## Lời mở đầu
 
 Giao tiếp có vai trò vô cùng quan trọng đối với mỗi chúng ta, nó vừa là điều kiện tồn tại của xã hội, vừa là cách giúp con người gia nhập vào các mối quan hệ, lĩnh hội nền văn hóa, đạo đức chuẩn mực xã hội. Tuy nhiên đối với người khiếm thính, họ chỉ có thể sử dụng ngôn ngữ kí hiệu để giao tiếp và điều khó khăn nhất là không phải nhiều người biết hoặc hiểu loại ngôn ngữ này! Mô hình máy học (Machine Learning) là công nghệ khá mới, chưa được ứng dụng rộng rãi ở đất nước chúng ta. Do đó chúng em đã sử dụng mô hình này để phát triển nên **“Dự án mã nguồn mở Atlantis engine” **với mục đích có thể giúp đỡ những người thiếu may mắn ấy dễ dàng hơn giao tiếp cũng như giúp họ kết nối với cộng đồng.
