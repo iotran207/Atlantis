@@ -1,19 +1,16 @@
-from fastapi import APIRouter, UploadFile
-from asyncio import sleep as sleep_async
-from uvicorn import run as run_server
-from fastapi.responses import HTMLResponse
-from cv2 import VideoCapture, cvtColor, COLOR_BGR2RGB, imencode, CAP_DSHOW
-from pickle import load as pickle_load
-from time import time
-from pydantic import BaseModel
-from sqlite3 import connect as sqlite_connect
-from random import SystemRandom
-from string import ascii_uppercase, digits
-from os.path import exists as path_exists
 from os import mkdir
+from os.path import exists as path_exists
+from pickle import load as pickle_load
+from sqlite3 import connect as sqlite_connect
+from time import time
 
 import mediapipe as mp
 import numpy as np
+from api.utils import randomString
+from cv2 import COLOR_BGR2RGB, VideoCapture, cvtColor
+from fastapi import APIRouter, UploadFile
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 DATABASE = sqlite_connect('database.sqlite')
 DATABASE_CURSOR = DATABASE.cursor()
@@ -25,31 +22,33 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
-model_dict = pickle_load(open('model.p', 'rb'))
+model_dict = pickle_load(open('../model/model.p', 'rb'))
 model = model_dict['model']
 
-labels_dict = {0:'hi',1:'toi la',2:'hoang lan'} 
+labels_dict = {0: 'hi', 1: 'toi la', 2: 'hoang lan'}
 
-class GetTokenModel(BaseModel):
+
+class User(BaseModel):
     username: str
     password: str
 
-async def VerifyUserToken(token: str):
-    if not DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE token = '{token}'").fetchone():
-        return False
-    else:
-        return True
 
-async def HandleVideo(VIDEO_PATH: str):
-    video_capture = VideoCapture(VIDEO_PATH)
+def verifyUserToken(token: str) -> bool:
+    return not not DATABASE_CURSOR.execute(
+        "SELECT * FROM DATA_USER WHERE token = ?", (token, )).fetchone()
+
+
+async def handleVideo(video_path: str) -> dict[str, list[str] | str]:
+    video_capture = VideoCapture(video_path)
     predicted_character = ''
-    OUTPUT = []
-    CHECK_FRAME = 0
+    output: list[str] = []
+    detected = True
+
     try:
         while True:
-            data_aux = []
-            x_ = []
-            y_ = []
+            data_aux: list[int] = []
+            xs: list[int] = []
+            ys: list[int] = []
             ret, frame = video_capture.read()
             if not ret:
                 break
@@ -59,103 +58,142 @@ async def HandleVideo(VIDEO_PATH: str):
             frame_rgb = cvtColor(frame, COLOR_BGR2RGB)
             results = hands.process(frame_rgb)
             if results.multi_hand_landmarks:
-                CHECK_FRAME+=1
-                if CHECK_FRAME == 1:
-                    CHECK_FRAME = 0
-                    for hand_landmarks in results.multi_hand_landmarks:
-                        for i in range(len(hand_landmarks.landmark)):
-                            x = hand_landmarks.landmark[0].x
-                            y = hand_landmarks.landmark[0].y
-                            x_.append(x)
-                            y_.append(y)
+                detected = True
 
-                        for i in range(len(hand_landmarks.landmark)):
-                            x = hand_landmarks.landmark[0].x
-                            y = hand_landmarks.landmark[0].y
-                            data_aux.append(x - min(x_))
-                            data_aux.append(y - min(y_))
+            if not detected:
+                continue
 
-                    x1 = int(min(x_) * W) - 10
-                    y1 = int(min(y_) * H) - 10
-                    x2 = int(max(x_) * W) - 10
-                    y2 = int(max(y_) * H) - 10
+            detected = False
+            for hand_landmarks in results.multi_hand_landmarks:
+                for _ in range(len(hand_landmarks.landmark)):
+                    xs.append(hand_landmarks.landmark[0].x)
+                    ys.append(hand_landmarks.landmark[0].y)
 
-                    prediction = model.predict([np.asarray(data_aux)])
-                    predicted_character = labels_dict[int(prediction[0])]
-                    if OUTPUT == []:
-                        OUTPUT.append(predicted_character)
-                        print(predicted_character)
-                    else:
-                        if OUTPUT[-1] != predicted_character:
-                            OUTPUT.append(predicted_character)
-                            print(predicted_character)
+                for _ in range(len(hand_landmarks.landmark)):
+                    data_aux.append(hand_landmarks.landmark[0].x - min(xs))
+                    data_aux.append(hand_landmarks.landmark[0].y - min(ys))
 
-        return {"data": OUTPUT}
+            # unused variables
+            # x1 = int(min(x_) * W) - 10
+            # y1 = int(min(y_) * H) - 10
+            # x2 = int(max(x_) * W) - 10
+            # y2 = int(max(y_) * H) - 10
+
+            prediction = model.predict([np.asarray(data_aux)])
+            predicted_character = labels_dict[int(prediction[0])]
+            if output == []:
+                output.append(predicted_character)
+                print(predicted_character)
+                continue
+            if output[-1] != predicted_character:
+                output.append(predicted_character)
+                print(predicted_character)
+
+        return {"data": output}
     except Exception as e:
         return {"error": str(e)}
+
 
 @router.post("/video")
-async def UploadVideo(file: UploadFile = UploadFile,token: str = None):
-    if not DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE token = '{token}'").fetchone():
+async def uploadVideo(file: UploadFile | None = None,
+                      token: str | None = None):
+    if file is None:
+        return {"error": "No file provided."}
+    if token is None:
+        return {"error": "No token provided."}
+
+    if not DATABASE_CURSOR.execute("SELECT * FROM DATA_USER WHERE token = ?",
+                                   (token, )).fetchone():
         return {"error": "Invalid token."}
-    else:
-        TimeNow = time()
-        with open(f"data/temp/{TimeNow}.mp4", "wb") as buffer:
-            buffer.write(file.file.read())
 
-    return await HandleVideo(f"data/temp/{TimeNow}.mp4")
+    timestamp = time()
+    with open(f"data/temp/{timestamp}.mp4", "wb") as buffer:
+        buffer.write(file.file.read())
 
-def GenToken():
-    return ''.join(SystemRandom().choice(ascii_uppercase + digits) for _ in range(32))
+    return await handleVideo(f"data/temp/{timestamp}.mp4")
+
 
 @router.post("/regentoken")
-async def GetToken(data: GetTokenModel):
-    token = GenToken()
-    while DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE token = '{token}'").fetchone():
-        token = GenToken()
-    DATABASE_CURSOR.execute(f"UPDATE DATA_USER SET token = '{token}' WHERE username = '{data.username}' AND password = '{data.password}'")
+async def getToken(user: User):
+    token = randomString(32)
+
+    while DATABASE_CURSOR.execute("SELECT * FROM DATA_USER WHERE token = ?",
+                                  (token, )).fetchone():
+        token = randomString(32)
+
+    DATABASE_CURSOR.execute(
+        "UPDATE DATA_USER SET token = ? WHERE username = ? AND password = ?",
+        (token, user.username, user.password))
     DATABASE.commit()
-    
-    DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE username = '{data.username}' AND password = '{data.password}'")
+
+    DATABASE_CURSOR.execute(
+        "SELECT * FROM DATA_USER WHERE username = ? AND password = ?",
+        (user.username, user.password))
+
     result = DATABASE_CURSOR.fetchone()
-    if result:
-        return {"token": result[2]}
-    else:
-        return {"error": "Invalid username or password, you can go to /register to create a new account."}
+    if not result:
+        return {
+            "error":
+            "Invalid username or password, you can go to /register to create a new account."
+        }
+
+    return {"token": result[2]}
+
 
 @router.post("/register")
-async def Register(username: str, password: str):
+async def register(username: str, password: str):
     try:
-        DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE username = '{username}'")
-        result = DATABASE_CURSOR.fetchone()
-        if result:
+        DATABASE_CURSOR.execute("SELECT * FROM DATA_USER WHERE username = ?",
+                                (username, ))
+        if DATABASE_CURSOR.fetchone():  # If the username already exists
             return {"error": "Username already exists."}
-        else:
-            token = GenToken()
-            while DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE token = '{token}'").fetchone():
-                token = GenToken()
-            DATABASE_CURSOR.execute(f"INSERT INTO DATA_USER (username, password,token) VALUES ('{username}', '{password}', '{token}')")
-            DATABASE.commit()
-            return {"token": f"{token}"}
-    except Exception as e:
-        return {"error": str(e)}
-    
-@router.post("/upload")
-async def UploadFile(file: UploadFile = UploadFile,token: str = None):
-    if VerifyUserToken(token)==False:
-        return {"error": "Invalid token."}
-    else:
-        USERNAME = DATABASE_CURSOR.execute(f"SELECT * FROM DATA_USER WHERE token = '{token}'").fetchone()[0]
-        if not path_exists(f"data/user/{USERNAME}"):
-            mkdir(f"data/user/{USERNAME}")
 
-        with open(f"data/user/{USERNAME}/{file.filename}", "wb") as buffer:
-            buffer.write(file.file.read())
-        return {"status": "success", "filename": file.filename, "username": USERNAME,"time_upload": time(),"size": file.file.seek(0,2)}
-    
+        token = randomString(32)
+        while DATABASE_CURSOR.execute(
+                "SELECT * FROM DATA_USER WHERE token = ?",
+            (token, )).fetchone():
+            # If the token already exists
+            token = randomString(32)
+
+        DATABASE_CURSOR.execute(
+            "INSERT INTO DATA_USER (username, password, token) VALUES (?, ?, ?)",
+            (username, password, token))
+
+        DATABASE.commit()
+
+        return {"token": token}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@router.post("/upload")
+async def uploadFile(file: UploadFile | None = None, token: str | None = None):
+    if file is None:
+        return {"error": "No file provided."}
+    if token is None:
+        return {"error": "No token provided."}
+
+    if verifyUserToken(token) == False:
+        return {"error": "Invalid token."}
+
+    username = DATABASE_CURSOR.execute(
+        "SELECT * FROM DATA_USER WHERE token = ?", (token, )).fetchone()[0]
+
+    if not path_exists(f"data/user/{username}"):
+        mkdir(f"data/user/{username}")
+
+    with open(f"data/user/{username}/{file.filename}", "wb") as buffer:
+        buffer.write(file.file.read())
+
+    return {
+        "status": "success",
+        "filename": file.filename,
+        "username": username,
+        "time_upload": time(),
+        "size": file.file.seek(0, 2)
+    }
+
+
 @router.post("/customtrain")
-async def train(token:str):
-    return {"status":"will be updated soon."}
-    
-    
-    
+async def train(token: str):
+    return {"status": "will be updated soon."}

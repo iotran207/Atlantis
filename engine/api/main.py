@@ -1,16 +1,12 @@
-from os import listdir
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers.engine import router as engine_router
 
 app = FastAPI()
 
 origins = ['*']
 
-for file in listdir('./routers'):
-    if file.endswith('.py') and file != '__init__.py':
-        module = file.replace('.py', '')
-        exec(f'from routers.{module} import router')
-        exec(f'app.include_router(router)')
+app.include_router(engine_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +15,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 async def home():
