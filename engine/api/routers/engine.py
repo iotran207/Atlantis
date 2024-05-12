@@ -6,7 +6,7 @@ from cv2 import VideoCapture, cvtColor, COLOR_BGR2RGB, imencode, CAP_DSHOW
 from pickle import load as pickle_load
 from time import time
 from pydantic import BaseModel
-from sqlite3 import co5nnect as sqlite_connect
+from sqlite3 import connect as sqlite_connect
 from random import SystemRandom
 from string import ascii_uppercase, digits
 from os.path import exists as path_exists

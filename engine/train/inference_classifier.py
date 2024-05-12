@@ -22,7 +22,6 @@ CHECK_FRAME = 0
 predicted_character = ''
 
 while True:
-
     data_aux = []
     x_ = []
     y_ = []
