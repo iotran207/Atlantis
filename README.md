@@ -30,7 +30,7 @@ Giao diện chương trình là gì? Giao diện chương trình – Application
 
 #### Dưới đây là hướng dẫn train model cơ bản
 
-```
+```python
 # collect_imgs.py
 import os
 import cv2
@@ -63,7 +63,7 @@ cap.release()
 cv2.destroyAllWindows()
 ```
 
-```
+```python
 #create_dataset.py
 import os
 import pickle
@@ -115,7 +115,7 @@ pickle.dump({'data': data, 'labels': labels}, f)
 f.close()
 ```
 
-```
+```python
 #train_classifier.py
 import pickle
 
@@ -143,7 +143,7 @@ f.close()
 remove('./data.pickle')
 ```
 
-```
+```python
 #inference_classifier.py
 import pickle
 
