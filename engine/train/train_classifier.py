@@ -6,7 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-data_dict = pickle.load(open('./data.pickle', 'rb'))
+with open('./data.pickle', 'rb') as f:
+    data_dict = pickle.load(f)
 
 data = np.asarray(data_dict['data'])
 labels = np.asarray(data_dict['labels'])

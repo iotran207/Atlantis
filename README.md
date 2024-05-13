@@ -1,3 +1,9 @@
+---
+runme:
+  id: 01HXQM38H0ZX9BSHH89DJJB5PA
+  version: v3
+---
+
 # Atlantis engine
 
 ![1715102710368](example/docs/image/Atlantis.png)
@@ -43,7 +49,7 @@ Giao diện chương trình là gì? Giao diện chương trình – Application
 
 #### Dưới đây là hướng dẫn train model cơ bản
 
-```python
+```python {"id":"01HXQM38GYX73YFXXRSQ2KJSEJ"}
 # engine/train/collect_imgs.py
 
 import os
@@ -76,9 +82,10 @@ for j in range(number_of_classes):
 cap.release()
 cv2.destroyAllWindows()
 
+
 ```
 
-```python
+```python {"id":"01HXQM38GYX73YFXXRSQXQ5PWM"}
 # engine/train/create_dataset.py
 
 import os
@@ -124,9 +131,10 @@ for dir_ in os.listdir(DATA_DIR):
 with open('data.pickle', 'wb') as f:
     pickle.dump({'data': data, 'labels': labels}, f)
 
+
 ```
 
-```python
+```python {"id":"01HXQM38GYX73YFXXRSR0G097A"}
 # engine/train/train_classifier.py
 
 import pickle
@@ -137,7 +145,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-data_dict = pickle.load(open('./data.pickle', 'rb'))
+with open('./data.pickle', 'rb') as f:
+    data_dict = pickle.load(f)
 
 data = np.asarray(data_dict['data'])
 labels = np.asarray(data_dict['labels'])
@@ -163,9 +172,10 @@ with open('../model/model.p', 'wb') as f:
     pickle.dump({'model': model}, f)
 
 remove('./data.pickle')
+
 ```
 
-```python
+```python {"id":"01HXQM38GYX73YFXXRSRYS7KBR"}
 # engine/train/inference_classifier.py
 
 import pickle
@@ -174,7 +184,8 @@ import cv2
 import mediapipe as mp
 import numpy as np
 
-model_dict = pickle.load(open('../model/model.p', 'rb'))
+with open('../model/model.p', 'rb') as f:
+    model_dict = pickle.load(f)
 model = model_dict['model']
 
 cap = cv2.VideoCapture(0)
@@ -258,7 +269,7 @@ cv2.destroyAllWindows()
 
 ## Giấy phép
 
-```
+```md {"id":"01HXQM38GZ1HBF5NNQ999QT1D4"}
 MIT License
 
 Copyright (c) 2024 iotran207
@@ -281,6 +292,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
 ```
 

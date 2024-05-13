@@ -22,7 +22,8 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
-model_dict = pickle_load(open('../model/model.p', 'rb'))
+with open('../model/model.p', 'rb') as f:
+    model_dict = pickle_load(f)
 model = model_dict['model']
 
 labels_dict = {0: 'hi', 1: 'toi la', 2: 'hoang lan'}
