@@ -9,6 +9,8 @@
 * [X]  Tạo các code mẫu để áp dụng
 * [ ]  đang cập nhật tiếp...
 
+https://github.com/iotran207/Atlantis/assets/112244548/6781001b-ceaa-44ec-bb2f-b848aefccb5a
+
 ## Thử nghiệm
 
 Thầy cô có thể truy cập đường link https://pealadau.org/atlantis để dùng thử dự án lần này.
@@ -42,8 +44,6 @@ Giao diện chương trình là gì? Giao diện chương trình – Application
 ### Hướng dẫn train models cho cá nhân
 
 #### Dưới đây là hướng dẫn train model cơ bản
-
-https://github.com/iotran207/Atlantis/assets/112244548/6781001b-ceaa-44ec-bb2f-b848aefccb5a
 
 ```python
 # collect_imgs.py
