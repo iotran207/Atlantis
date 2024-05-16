@@ -43,6 +43,8 @@ Giao diện chương trình là gì? Giao diện chương trình – Application
 
 #### Dưới đây là hướng dẫn train model cơ bản
 
+https://github.com/iotran207/Atlantis/assets/112244548/6781001b-ceaa-44ec-bb2f-b848aefccb5a
+
 ```python
 # collect_imgs.py
 import os
