@@ -1,5 +1,11 @@
 # Atlantis engine
 
+<p align="center">
+    <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" width="70" height="22" style= "display: inline"/>
+    <img src="https://badgen.net/github/commits/iotran207/Atlantis" width="75" height="22"/>
+    <img src="https://api.visitorbadge.io/api/VisitorHit?user=iotran207f&repo=Atlantis&countColor=%237B1E7A" height="18"/>
+</p>
+
 ![1715102710368](example/docs/image/Atlantis.png)
 
 ## Thành quả phát triển
